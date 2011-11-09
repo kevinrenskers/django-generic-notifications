@@ -1,0 +1,1 @@
+pip install -e git://github.com/kevinrenskers/django-generic-notifications.git#egg=django-generic-notifications
