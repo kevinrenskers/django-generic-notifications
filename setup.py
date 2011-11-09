@@ -9,7 +9,7 @@ setup(
     author_email="info@mixedcase.nl",
     url="https://github.com/kevinrenskers/django-generic-notifications",
     packages=[
-        "vrot",
+        "notifications",
     ],
     package_dir={"notifications": "notifications"},
     classifiers=[
