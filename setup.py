@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name="django-generic-notifications",
-    version=__import__("notifications").get_version(),
+    version='0.1',
     description="Generic notification system for Django, with multiple input types and output backends",
     long_description=open("README.md").read(),
     author="Kevin Renskers",
