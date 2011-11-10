@@ -17,15 +17,15 @@ class Command(NoArgsCommand):
 
             notification_class = notification.get_type()
 
-            result = notification_class(
+            results = notification_class(
                 subject=notification.subject,
                 text=notification.text,
                 user=notification.user,
                 level=notification.level,
                 **notification.extra_context
-            ).do('process')
+            ).do('process', notification.backend)
 
-            if result:
+            if results[notification.backend]:
                 # success, simply delete the notification from the queue
                 notification.delete()
             else:

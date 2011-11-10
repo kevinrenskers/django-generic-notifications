@@ -18,6 +18,7 @@ class Migration(SchemaMigration):
             ('extra_context', self.gf('django.db.models.fields.TextField')(default='{}')),
             ('tries', self.gf('django.db.models.fields.PositiveIntegerField')(default=0)),
             ('type', self.gf('django.db.models.fields.CharField')(max_length=40)),
+            ('backend', self.gf('django.db.models.fields.CharField')(max_length=40)),
         ))
         db.send_create_signal('notifications', ['NotificationQueue'])
 
@@ -67,6 +68,7 @@ class Migration(SchemaMigration):
         },
         'notifications.notificationqueue': {
             'Meta': {'object_name': 'NotificationQueue'},
+            'backend': ('django.db.models.fields.CharField', [], {'max_length': '40'}),
             'extra_context': ('django.db.models.fields.TextField', [], {'default': "'{}'"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'level': ('django.db.models.fields.CharField', [], {'max_length': '40'}),

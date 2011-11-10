@@ -21,6 +21,7 @@ class NotificationQueue(models.Model):
     extra_context = JSONField()
     tries = models.PositiveIntegerField(default=0)
     type = models.CharField(max_length=40)
+    backend = models.CharField(max_length=40)
 
     def __unicode__(self):
         return self.text

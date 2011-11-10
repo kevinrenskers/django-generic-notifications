@@ -33,13 +33,19 @@ class BaseNotificationBackend(object):
             # can still be used.
             raise QueueError('Notifications can only be queued for logged in users, or you need to provide kwargs')
 
+        # Anonymous users can't be saved to database
+        user = None
+        if self.notification.user and self.notification.user.is_authenticated():
+            user = self.notification.user
+
         NotificationQueue.objects.create(
-            user=self.notification.user,
+            user=user,
             subject=self.notification.subject,
             text=self.notification.text,
             level=self.notification.level,
             extra_context=self.notification.kwargs,
-            type=self.notification.__class__.__name__
+            type=self.notification.__class__.__name__,
+            backend=self.__class__.__name__
         )
 
     def _direct(self):
@@ -49,6 +55,12 @@ class BaseNotificationBackend(object):
         It's useful for Django's messages app, popups, etc.
         """
         return self.process()
+
+    def validate(self):
+        """
+        Check for required settings. For example, if your backend needs a phone number, check for it here.
+        """
+        return True
 
     def create(self):
         """

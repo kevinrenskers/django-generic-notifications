@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.core.mail import send_mail
 from notifications.backend import BaseNotificationBackend
+from notifications import settings as notification_settings
 
 
 class MissingEmailError(Exception):
@@ -8,6 +9,9 @@ class MissingEmailError(Exception):
 
 
 class EmailNotificationBackend(BaseNotificationBackend):
+    """
+    A backend that sends email using Django's standard send_mail function.
+    """
     process_method = 'queue'
 
     def _validate_list(self, lst):
@@ -20,9 +24,11 @@ class EmailNotificationBackend(BaseNotificationBackend):
              return [lst]
         return list(lst)
 
-    def process(self):
+    def validate(self):
         """
-        Send email using Django's standard email function
+        This backend can only function when there are to and from addresses.
+        The to address can either be supplied to the notification type, or the logged in user should be supplied.
+        The from address can either be supplied, or should be set as settings.DEFAULT_FROM_EMAIL
         """
         to = self.notification.kwargs.get('email', False)
         if not to and hasattr(self.notification.user, 'email'):
@@ -31,13 +37,27 @@ class EmailNotificationBackend(BaseNotificationBackend):
         from_address = self.notification.kwargs.get('from', settings.DEFAULT_FROM_EMAIL)
 
         if not to:
-            if settings.DEBUG:
-                raise MissingEmailError('EmailNotificationBackend needs an email address. Either set an user or provide %s with an "email" argument.' % self.notification.__class__.__name__)
-            return False
+            if notification_settings.FAIL_SILENT:
+                return False
+            raise MissingEmailError('EmailNotificationBackend needs an email address. Either set an user or provide %s with an "email" argument.' % self.notification.__class__.__name__)
 
         if not from_address:
-            if settings.DEBUG:
-                raise MissingEmailError('EmailNotificationBackend needs a from address. Either set settings.DEFAULT_FROM_EMAIL or provide %s with a "from" argument.' % self.notification.__class__.__name__)
-            return False
+            if notification_settings.FAIL_SILENT:
+                return False
+            raise MissingEmailError('EmailNotificationBackend needs a from address. Either set settings.DEFAULT_FROM_EMAIL or provide %s with a "from" argument.' % self.notification.__class__.__name__)
 
-        return send_mail(self.notification.subject, self.notification.text, from_address, self._validate_list(to))
+        self.to = to
+        self.from_address = from_address
+
+        return True
+
+    def process(self):
+        """
+        Send email using Django's standard email function
+        """
+        return send_mail(
+            self.notification.subject,
+            self.notification.text,
+            self.from_address,
+            self._validate_list(self.to)
+        )
