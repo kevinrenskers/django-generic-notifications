@@ -2,10 +2,11 @@
 Simple example of use cases:
 
     from notifications.type.default import DefaultNotification
-    DefaultNotification('Subject', 'This is a notification!').do('add')
+    DefaultNotification('Subject', 'This is a notification!', request=request).do('add')
 
     from notifications.type.account import AccountNotification
-    DefaultNotification('Account created', 'Your account has been created!').do('add')
+    AccountNotification('Account created', 'Your account has been created!', user=request.user).do('add')
+    AccountNotification('Account created', 'Your account has been created!', email='hello@example.com').do('add')
 
 ## Cron
 There is a command to process notifications that have been added to the queue:
