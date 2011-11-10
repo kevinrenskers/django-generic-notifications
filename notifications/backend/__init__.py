@@ -24,8 +24,6 @@ class BaseNotificationBackend(object):
         This will add the notification to the database queue. A cron job will then get the notification,
         and call the process() method of its backend.
         """
-        from notifications.models import NotificationQueue
-
         if not self.notification.user and not self.notification.kwargs:
             # If the user is not logged in, then we have no way of getting to his
             # settings, thus unable to email/sms/whatever him.
@@ -38,6 +36,7 @@ class BaseNotificationBackend(object):
         if self.notification.user and self.notification.user.is_authenticated():
             user = self.notification.user
 
+        from notifications.models import NotificationQueue
         NotificationQueue.objects.create(
             user=user,
             subject=self.notification.subject,
