@@ -1,4 +1,4 @@
-from notifications import NotificationEngine
+from notifications.engine import NotificationEngine
 
 
 class BackendError(Exception):
@@ -61,12 +61,12 @@ class BaseNotification(object):
 
     def _get_backends(self):
         """
-        Get the correct backend(s) and send this notification to it.
-        The backend will figure out if the notification should be queued or shown directly.
+        Get the correct backend(s) for this notification.
+        Only backends that validate (all required settings are available) apply.
         """
         backends = {}
         for backend_name in self.allowed_backends:
-            # TODO: find out if this allowed backend is turned on & configured for the user
+            # TODO: find out if this allowed backend is actually turned on by the user
             backend = self._all_backends[backend_name](notification=self)
             if backend.validate():
                 backends[backend_name] = backend

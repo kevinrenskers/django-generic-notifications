@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
-from notifications import NotificationEngine
+from notifications.engine import NotificationEngine
 from notifications.fields import JSONField
 
 from notifications.type.account import AccountNotification
