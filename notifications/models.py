@@ -6,8 +6,8 @@ from notifications.fields import JSONField
 from notifications.type.account import AccountNotification
 from notifications.type.default import DefaultNotification
 
+from notifications.backend.django_email import DjangoEmailNotificationBackend
 from notifications.backend.django_messages import DjangoMessagesNotificationBackend
-from notifications.backend.email import EmailNotificationBackend
 
 
 class NotificationQueue(models.Model):
@@ -35,5 +35,5 @@ NotificationEngine.register_type(DefaultNotification)
 NotificationEngine.register_type(AccountNotification)
 
 # Register all backends
-NotificationEngine.register_backend(EmailNotificationBackend)
+NotificationEngine.register_backend(DjangoEmailNotificationBackend)
 NotificationEngine.register_backend(DjangoMessagesNotificationBackend)

@@ -8,7 +8,7 @@ class MissingEmailError(Exception):
     pass
 
 
-class EmailNotificationBackend(BaseNotificationBackend):
+class DjangoEmailNotificationBackend(BaseNotificationBackend):
     """
     A backend that sends email using Django's standard send_mail function.
     """
