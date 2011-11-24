@@ -85,6 +85,6 @@ class JSONField(models.TextField):
 #
 try:
     from south.modelsinspector import add_introspection_rules
-    add_introspection_rules([], ["^payment\.fields\.JSONField"])
+    add_introspection_rules([], ["^notifications\.fields\.JSONField"])
 except:
     pass
