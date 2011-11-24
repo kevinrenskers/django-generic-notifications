@@ -24,7 +24,8 @@ class BaseNotification(object):
             raise NotificationLevelError('unknown level "%s", must be one of %s' % (level, ', '.join(self.allowed_levels)))
 
         # By default all registered backends are allowed
-        self.allowed_backends = NotificationEngine._backends.keys()
+        if not self.allowed_backends:
+            self.allowed_backends = NotificationEngine._backends.keys()
 
         self.subject = subject
         self.text = text
