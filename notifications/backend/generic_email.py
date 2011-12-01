@@ -8,14 +8,14 @@ class GenericEmailNotificationBackend(DjangoEmailNotificationBackend):
     It's not registered by default, you will need to do this yourself.
     """
     def process(self):
-        text_body = self.notification.kwargs.get('text_body', self.notification.text)
+        text_body = self.notification.kwargs.get('text_body', self.notification.get_text(self))
         html_body = self.notification.kwargs.get('html_body', None)
         text_template = self.notification.kwargs.get('text_template', None)
         html_template = self.notification.kwargs.get('html_template', None)
 
         email = Email(
             to=self.to,
-            subject=self.notification.subject,
+            subject=self.notification.get_subject(self),
             text_body=text_body,
             html_body=html_body,
             text_template=text_template,

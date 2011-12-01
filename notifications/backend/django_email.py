@@ -56,8 +56,8 @@ class DjangoEmailNotificationBackend(BaseNotificationBackend):
         Send email using Django's standard email function
         """
         return send_mail(
-            self.notification.subject,
-            self.notification.text,
+            self.notification.get_subject(self),
+            self.notification.get_text(self),
             self.from_address,
             self._validate_list(self.to)
         )

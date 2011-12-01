@@ -31,7 +31,7 @@ class DjangoMessagesNotificationBackend(BaseNotificationBackend):
                 return False
             raise BackendConfigError('You need to add django.contrib.messages.context_processors.messages to TEMPLATE_CONTEXT_PROCESSORS')
 
-        self.text = self.notification.text or self.notification.subject
+        self.text = self.notification.get_text(self) or self.notification.get_subject(self)
 
         if not self.text:
             return False

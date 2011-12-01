@@ -66,6 +66,12 @@ class BaseNotification(object):
 
         return results
 
+    def get_text(self, backend):
+        return self.text
+
+    def get_subject(self, backend):
+        return self.subject
+
     def _get_backends(self):
         """
         Get the correct backend(s) for this notification.
