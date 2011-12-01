@@ -24,7 +24,7 @@ class BaseNotification(object):
 
     _all_backends = NotificationEngine._backends
 
-    def __init__(self, subject=None, text=None, user=None, level='info', **kwargs):
+    def __init__(self, subject=None, text=None, user=None, level=None, **kwargs):
         if level not in self.allowed_levels:
             raise NotificationLevelError('unknown level "%s", must be one of %s' % (level, ', '.join(self.allowed_levels)))
 
