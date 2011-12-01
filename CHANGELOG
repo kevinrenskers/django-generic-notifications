@@ -1,0 +1,10 @@
+0.1.0: Never published
+- Initial version
+
+0.1.1: Never published
+- Bugfixes
+
+0.1.2: December 1, 2011
+- The DjangoMessagesNotificationBackend can now use the subject as well as the text
+- Easier to subclass BaseNotification and set your own default properties
+- Changed documentation to reStructuredText, in preparation of move to PyPi

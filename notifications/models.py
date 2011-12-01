@@ -16,7 +16,7 @@ class NotificationQueue(models.Model):
     """
     user = models.ForeignKey(User, blank=True, null=True, related_name='notifications')
     subject = models.CharField(max_length=255, blank=True)
-    text = models.TextField()
+    text = models.TextField(blank=True)
     level = models.CharField(max_length=40)
     extra_context = JSONField()
     tries = models.PositiveIntegerField(default=0)

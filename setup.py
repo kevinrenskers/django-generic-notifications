@@ -5,7 +5,7 @@ setup(
     name="django-generic-notifications",
     version=version,
     description="Generic notification system for Django, with multiple input types and output backends",
-    long_description=open("README.md").read(),
+    long_description=open("README.rst").read(),
     author="Kevin Renskers",
     author_email="info@mixedcase.nl",
     url="https://github.com/kevinrenskers/django-generic-notifications",

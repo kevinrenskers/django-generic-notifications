@@ -14,12 +14,17 @@ class NotificationActionError(Exception):
 
 
 class BaseNotification(object):
+    subject = None
+    text = None
+    user = None
+    level = 'info'
+
     allowed_backends = []
     allowed_levels = ['info', 'success', 'error', 'warning']
 
     _all_backends = NotificationEngine._backends
 
-    def __init__(self, subject, text, user=None, level='info', **kwargs):
+    def __init__(self, subject=None, text=None, user=None, level='info', **kwargs):
         if level not in self.allowed_levels:
             raise NotificationLevelError('unknown level "%s", must be one of %s' % (level, ', '.join(self.allowed_levels)))
 
@@ -27,10 +32,10 @@ class BaseNotification(object):
         if not self.allowed_backends:
             self.allowed_backends = NotificationEngine._backends.keys()
 
-        self.subject = subject
-        self.text = text
-        self.user = user
-        self.level = level
+        self.subject = subject or self.subject
+        self.text = text or self.text
+        self.user = user or self.user
+        self.level = level or self.level
         self.request = kwargs.pop('request', False) # can't be saved to database, so remove from kwargs
         self.kwargs = kwargs
 

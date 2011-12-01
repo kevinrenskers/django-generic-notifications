@@ -1,2 +1,6 @@
 include AUTHORS
 include LICENSE
+include CHANGELOG
+include INSTALL.rst
+include README.rst
+include USAGE.rst

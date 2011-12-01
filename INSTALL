@@ -1,4 +1,0 @@
-1. Get the code: pip install -e git://github.com/kevinrenskers/django-generic-notifications.git#egg=django-generic-notifications
-2. Add 'notifications' to your INSTALLED_APPS
-3. Sync the database (south migrations are provided)
-4. Profit!

@@ -1,5 +1,6 @@
-# Usage
-Simple example of use cases:
+Usage
+=====
+Simple example of use cases::
 
     from notifications.type.default import DefaultNotification
     DefaultNotification('Subject', 'This is a notification!', request=request).do('add')
@@ -8,8 +9,10 @@ Simple example of use cases:
     AccountNotification('Account created', 'Your account has been created!', user=request.user).do('add')
     AccountNotification('Account created', 'Your account has been created!', email='hello@example.com').do('add')
 
-## Cron
-There is a command to process notifications that have been added to the queue:
+
+Cron
+====
+There is a command to process notifications that have been added to the queue::
 
     ./manage.py process_notifications
 
