@@ -8,3 +8,7 @@
 - The DjangoMessagesNotificationBackend can now use the subject as well as the text
 - Easier to subclass BaseNotification and set your own default properties
 - Changed documentation to reStructuredText, in preparation of move to PyPi
+
+Next
+- Able to set a different subject and/or text per different backend
+- Respect FAIL_SILENT in _get_backends(self)
