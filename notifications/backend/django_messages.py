@@ -36,6 +36,9 @@ class DjangoMessagesNotificationBackend(BaseNotificationBackend):
         return True
 
     def process(self):
+        if not self.text:
+            return False
+
         # Translate notification level to django message level
         levels = {
             'info': messages.INFO,
