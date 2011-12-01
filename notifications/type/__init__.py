@@ -1,4 +1,5 @@
 from notifications.engine import NotificationEngine
+from notifications import settings as notification_settings
 
 
 class BackendError(Exception):
@@ -77,7 +78,7 @@ class BaseNotification(object):
             if backend.validate():
                 backends[backend_name] = backend
 
-        if not backends:
+        if not backends and not notification_settings.FAIL_SILENT:
             raise BackendError('Could not find a backend for this notification')
 
         return backends
