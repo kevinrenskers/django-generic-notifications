@@ -12,12 +12,13 @@ A notification could be anything:
 
 - you have received a private message on a forum
 - there is a new comment on your blog
-- someone liked your profile
+- someone liked your profile or article
 - a new post was created in a thread you follow
-- someone replied to your poll
+- someone answered your poll
+- you have a new friend request or follower
 
-As far as this project is concerned, a notification is nothing more but an (optional) subject, text body, and a level
-(info, success, error, warning), together with a list of receivers.
+As far as this project is concerned, a notification is nothing more but an (optional) subject, text body, and a list of
+receivers.
 
 Backends
 ========

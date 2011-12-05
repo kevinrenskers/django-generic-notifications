@@ -12,6 +12,9 @@ setup(
     packages=[
         "notifications",
     ],
+    install_requires=[
+        "django >= 1.2",
+    ],
     package_dir={"notifications": "notifications"},
     classifiers=[
         "Development Status :: 4 - Beta",
