@@ -25,6 +25,11 @@ class BaseNotification(object):
         self.kwargs = kwargs
 
         users = self.get_recipients()
+
+        # Force users to be a list
+        if not hasattr(users, '__iter__'):
+            users = [users]
+
         if not users and not notification_settings.FAIL_SILENT:
             raise BackendError('No recipients found for this notification')
 
@@ -45,7 +50,7 @@ class BaseNotification(object):
                     return False
                 raise BackendError('No user or request object given. Please give at least one of them, or override get_recipients')
 
-        return [user]
+        return user
 
     def get_text(self, backend):
         return self.text
