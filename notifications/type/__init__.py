@@ -33,7 +33,7 @@ class BaseNotification(object):
         if not users and not notification_settings.FAIL_SILENT:
             raise BackendError('No recipients found for this notification')
 
-        for user in self.get_recipients():
+        for user in users:
             backends = self._get_backends(user)
             for backend_name, backend in backends.items():
                 # the backend will figure out if it needs to queue or not
@@ -76,3 +76,8 @@ class BaseNotification(object):
             raise BackendError('Could not find a backend for this notification')
 
         return backends
+
+    def __getattr__(self, name):
+        # Makes it much easier to access the keyword arguments
+        # http://docs.python.org/reference/datamodel.html#customizing-attribute-access
+        return self.kwargs[name]
