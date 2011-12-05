@@ -30,24 +30,19 @@ class DjangoEmailNotificationBackend(BaseNotificationBackend):
         The to address can either be supplied to the notification type, or the logged in user should be supplied.
         The from address can either be supplied, or should be set as settings.DEFAULT_FROM_EMAIL
         """
-        to = self.notification.kwargs.get('email', False)
-        if not to and hasattr(self.notification.user, 'email'):
-            to = self.notification.email
 
-        from_address = self.notification.kwargs.get('from', settings.DEFAULT_FROM_EMAIL)
+        self.to = self.user.email
+        self.from_address = settings.DEFAULT_FROM_EMAIL
 
-        if not to:
+        if not self.to:
             if notification_settings.FAIL_SILENT:
                 return False
-            raise MissingEmailError('EmailNotificationBackend needs an email address. Either set an user or provide %s with an "email" argument.' % self.notification.__class__.__name__)
+            raise MissingEmailError('EmailNotificationBackend needs an email address.')
 
-        if not from_address:
+        if not self.from_address:
             if notification_settings.FAIL_SILENT:
                 return False
-            raise MissingEmailError('EmailNotificationBackend needs a from address. Either set settings.DEFAULT_FROM_EMAIL or provide %s with a "from" argument.' % self.notification.__class__.__name__)
-
-        self.to = to
-        self.from_address = from_address
+            raise MissingEmailError('EmailNotificationBackend needs a from address.')
 
         return True
 
@@ -56,8 +51,8 @@ class DjangoEmailNotificationBackend(BaseNotificationBackend):
         Send email using Django's standard email function
         """
         return send_mail(
-            self.notification.get_subject(self),
-            self.notification.get_text(self),
+            self.subject,
+            self.text,
             self.from_address,
             self._validate_list(self.to)
         )

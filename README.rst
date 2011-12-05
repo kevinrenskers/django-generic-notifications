@@ -10,29 +10,25 @@ Notifications
 =============
 A notification could be anything:
 
-- there was an error in your form submission
-- your account has been created
-- your account has been activated
 - you have received a private message on a forum
 - there is a new comment on your blog
 - someone liked your profile
-- a message from the administrator
+- a new post was created in a thread you follow
+- someone replied to your poll
 
 As far as this project is concerned, a notification is nothing more but an (optional) subject, text body, and a level
-(info, success, error, warning).
+(info, success, error, warning), together with a list of receivers.
 
 Backends
 ========
 There are multiple output backends. Some possible examples are:
 
 - email
-- a popup in your webbrowser
 - sms message
 - iPhone push notification
-- Django's messages app
+- notification center
 
-Some backends can process notifications in real time (Django's messages app for example), and others should run in the
-background (sending email, sending push messages to iPhones). Each backend specifies what its mode of operation is.
+At this moment only two email backends are provided, one of which is turned on by default.
 
 Notification types
 ==================
@@ -45,15 +41,14 @@ Each notification will then figure out what backend to use based on this informa
 
 Settings
 ========
-Some backends will need extra information from the user, for example a phone number, email address or iPhone device id.
+Some backends will need extra information from the user, for example a phone number or email address.
 
-This project doesn't provide a settings app where users can configure these. Instead, this is left to an exercise to the
-reader (at least for now). Each output backend can accept a variable number of keyword arguments, so building a custom
-backend that needs a new setting isn't a problem.
+Users can also select which notification types they're interested in, and what possible backends they would like to
+receive the message on.
 
 Queue
 =====
-Some notification backends can't process in real time, instead adding them to a queue. At this moment, this is based on
+Most notification backends can't process in real time, instead adding them to a queue. At this moment, this is based on
 a simple database model and a manage.py script which can be used from your cron.
 
 In the future celery tasks should be added too.

@@ -6,65 +6,46 @@ class BackendError(Exception):
     pass
 
 
-class NotificationLevelError(Exception):
-    pass
-
-
-class NotificationActionError(Exception):
-    pass
-
-
 class BaseNotification(object):
     subject = None
     text = None
-    user = None
-    level = 'info'
-
     allowed_backends = []
-    allowed_levels = ['info', 'success', 'error', 'warning']
 
     _all_backends = NotificationEngine._backends
 
-    def __init__(self, subject=None, text=None, user=None, level=None, **kwargs):
-        if level not in self.allowed_levels:
-            raise NotificationLevelError('unknown level "%s", must be one of %s' % (level, ', '.join(self.allowed_levels)))
-
+    def __init__(self, subject=None, text=None, request=None, user=None, **kwargs):
         # By default all registered backends are allowed
         if not self.allowed_backends:
             self.allowed_backends = NotificationEngine._backends.keys()
 
         self.subject = subject or self.subject
         self.text = text or self.text
-        self.user = user or self.user
-        self.level = level or self.level
-        self.request = kwargs.pop('request', False) # can't be saved to database, so remove from kwargs
+        self.user = user
+        self.request = request
         self.kwargs = kwargs
 
-    def do(self, action='add', backend=False):
-        """
-        Do something with this notification. By default we send it to the backend, which can decide
-        if it needs to go to the queue, or if it will be shown directly.
-        The "process" action will be used by the cron job, for the queued notifications.
-        """
+        users = self.get_recipients()
+        if not users and not notification_settings.FAIL_SILENT:
+            raise BackendError('No recipients found for this notification')
 
-        if action not in ['add', 'process']:
-            raise NotificationActionError('unknown action "%s", must be one of "add" or "process"' % action)
+        for user in self.get_recipients():
+            backends = self._get_backends(user)
+            for backend_name, backend in backends.items():
+                # the backend will figure out if it needs to queue or not
+                backend.create()
 
-        if backend:
-            # We are only interested in one specific backend, so override self.allowed_backends.
-            # This is used by the cron job, where a notification is queued for a specific backend.
-            self.allowed_backends = [backend]
+    def get_recipients(self):
+        user = self.user
 
-        backends = self._get_backends()
-        results = {}
+        if not user:
+            try:
+                user = self.request.user
+            except KeyError:
+                if notification_settings.FAIL_SILENT:
+                    return False
+                raise BackendError('No user or request object given. Please give at least one of them, or override get_recipients')
 
-        for backend_name, backend in backends.items():
-            if action == 'add':
-                results[backend_name] = backend.create()
-            elif action == 'process':
-                results[backend_name] = backend.process()
-
-        return results
+        return [user]
 
     def get_text(self, backend):
         return self.text
@@ -72,7 +53,7 @@ class BaseNotification(object):
     def get_subject(self, backend):
         return self.subject
 
-    def _get_backends(self):
+    def _get_backends(self, user):
         """
         Get the correct backend(s) for this notification.
         Only backends that validate (all required settings are available) apply.
@@ -80,7 +61,9 @@ class BaseNotification(object):
         backends = {}
         for backend_name in self.allowed_backends:
             # TODO: find out if this allowed backend is actually turned on by the user
-            backend = self._all_backends[backend_name](notification=self)
+            subject = self.get_subject(backend_name)
+            text = self.get_text(backend_name)
+            backend = self._all_backends[backend_name](user=user, subject=subject, text=text)
             if backend.validate():
                 backends[backend_name] = backend
 

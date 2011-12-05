@@ -1,0 +1,3 @@
+{% for name, class in notification_types.items %}
+    <div>{{ name }}: {{ class.allowed_backends }}</div>
+{% endfor %}

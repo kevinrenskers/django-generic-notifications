@@ -11,13 +11,10 @@ class Migration(SchemaMigration):
         # Adding model 'NotificationQueue'
         db.create_table('notifications_notificationqueue', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('user', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='notifications', null=True, to=orm['auth.User'])),
+            ('user', self.gf('django.db.models.fields.related.ForeignKey')(related_name='notifications', to=orm['auth.User'])),
             ('subject', self.gf('django.db.models.fields.CharField')(max_length=255, blank=True)),
-            ('text', self.gf('django.db.models.fields.TextField')()),
-            ('level', self.gf('django.db.models.fields.CharField')(max_length=40)),
-            ('extra_context', self.gf('django.db.models.fields.TextField')(default='{}')),
+            ('text', self.gf('django.db.models.fields.TextField')(blank=True)),
             ('tries', self.gf('django.db.models.fields.PositiveIntegerField')(default=0)),
-            ('type', self.gf('django.db.models.fields.CharField')(max_length=40)),
             ('backend', self.gf('django.db.models.fields.CharField')(max_length=40)),
         ))
         db.send_create_signal('notifications', ['NotificationQueue'])
@@ -46,7 +43,7 @@ class Migration(SchemaMigration):
         'auth.user': {
             'Meta': {'object_name': 'User'},
             'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
+            'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'unique': 'True', 'null': 'True'}),
             'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
             'groups': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Group']", 'symmetrical': 'False', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -69,14 +66,11 @@ class Migration(SchemaMigration):
         'notifications.notificationqueue': {
             'Meta': {'object_name': 'NotificationQueue'},
             'backend': ('django.db.models.fields.CharField', [], {'max_length': '40'}),
-            'extra_context': ('django.db.models.fields.TextField', [], {'default': "'{}'"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'level': ('django.db.models.fields.CharField', [], {'max_length': '40'}),
             'subject': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
-            'text': ('django.db.models.fields.TextField', [], {}),
+            'text': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'tries': ('django.db.models.fields.PositiveIntegerField', [], {'default': '0'}),
-            'type': ('django.db.models.fields.CharField', [], {'max_length': '40'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'notifications'", 'null': 'True', 'to': "orm['auth.User']"})
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'notifications'", 'to': "orm['auth.User']"})
         }
     }
 
