@@ -52,10 +52,10 @@ class BaseNotification(object):
 
         return user
 
-    def get_text(self, backend):
+    def get_text(self, backend, user):
         return self.text
 
-    def get_subject(self, backend):
+    def get_subject(self, backend, user):
         return self.subject
 
     def _get_backends(self, user):
@@ -66,8 +66,8 @@ class BaseNotification(object):
         backends = {}
         for backend_name in self.allowed_backends:
             # TODO: find out if this allowed backend is actually turned on by the user
-            subject = self.get_subject(backend_name)
-            text = self.get_text(backend_name)
+            subject = self.get_subject(backend_name, user)
+            text = self.get_text(backend_name, user)
             backend = self._all_backends[backend_name](user=user, subject=subject, text=text)
             if backend.validate():
                 backends[backend_name] = backend
