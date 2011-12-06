@@ -15,15 +15,51 @@ class Migration(SchemaMigration):
             ('subject', self.gf('django.db.models.fields.CharField')(max_length=255, blank=True)),
             ('text', self.gf('django.db.models.fields.TextField')(blank=True)),
             ('tries', self.gf('django.db.models.fields.PositiveIntegerField')(default=0)),
-            ('backend', self.gf('django.db.models.fields.CharField')(max_length=40)),
+            ('notification_backend', self.gf('django.db.models.fields.CharField')(max_length=255)),
         ))
         db.send_create_signal('notifications', ['NotificationQueue'])
+
+        # Adding model 'SelectedNotificationsType'
+        db.create_table('notifications_selectednotificationstype', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
+            ('notification_type', self.gf('django.db.models.fields.CharField')(max_length=255)),
+            ('notification_backends', self.gf('django.db.models.fields.TextField')()),
+        ))
+        db.send_create_signal('notifications', ['SelectedNotificationsType'])
+
+        # Adding unique constraint on 'SelectedNotificationsType', fields ['user', 'notification_type']
+        db.create_unique('notifications_selectednotificationstype', ['user_id', 'notification_type'])
+
+        # Adding model 'NotificationBackendSettings'
+        db.create_table('notifications_notificationbackendsettings', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
+            ('notification_backend', self.gf('django.db.models.fields.CharField')(max_length=255)),
+            ('settings', self.gf('django.db.models.fields.TextField')(default='{}')),
+        ))
+        db.send_create_signal('notifications', ['NotificationBackendSettings'])
+
+        # Adding unique constraint on 'NotificationBackendSettings', fields ['user', 'notification_backend']
+        db.create_unique('notifications_notificationbackendsettings', ['user_id', 'notification_backend'])
 
 
     def backwards(self, orm):
         
+        # Removing unique constraint on 'NotificationBackendSettings', fields ['user', 'notification_backend']
+        db.delete_unique('notifications_notificationbackendsettings', ['user_id', 'notification_backend'])
+
+        # Removing unique constraint on 'SelectedNotificationsType', fields ['user', 'notification_type']
+        db.delete_unique('notifications_selectednotificationstype', ['user_id', 'notification_type'])
+
         # Deleting model 'NotificationQueue'
         db.delete_table('notifications_notificationqueue')
+
+        # Deleting model 'SelectedNotificationsType'
+        db.delete_table('notifications_selectednotificationstype')
+
+        # Deleting model 'NotificationBackendSettings'
+        db.delete_table('notifications_notificationbackendsettings')
 
 
     models = {
@@ -63,14 +99,28 @@ class Migration(SchemaMigration):
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
+        'notifications.notificationbackendsettings': {
+            'Meta': {'unique_together': "(['user', 'notification_backend'],)", 'object_name': 'NotificationBackendSettings'},
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'notification_backend': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
+            'settings': ('django.db.models.fields.TextField', [], {'default': "'{}'"}),
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"})
+        },
         'notifications.notificationqueue': {
             'Meta': {'object_name': 'NotificationQueue'},
-            'backend': ('django.db.models.fields.CharField', [], {'max_length': '40'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'notification_backend': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
             'subject': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
             'text': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'tries': ('django.db.models.fields.PositiveIntegerField', [], {'default': '0'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'notifications'", 'to': "orm['auth.User']"})
+        },
+        'notifications.selectednotificationstype': {
+            'Meta': {'unique_together': "(['user', 'notification_type'],)", 'object_name': 'SelectedNotificationsType'},
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'notification_backends': ('django.db.models.fields.TextField', [], {}),
+            'notification_type': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"})
         }
     }
 

@@ -4,8 +4,13 @@ class BackendConfigError(Exception):
 
 class BaseNotificationBackend(object):
     process_method = None
+    name = None
 
-    def __init__(self, user, subject, text):
+    @classmethod
+    def get_name(cls):
+        return cls.name or cls.__name__
+
+    def __init__(self, user=None, subject=None, text=None):
         if self.process_method not in ['queue', 'direct']:
             raise BackendConfigError('You need to set the process_method property of %s to either "queue" or "direct"' % self.__class__.__name__)
 
@@ -23,7 +28,7 @@ class BaseNotificationBackend(object):
             user=self.user,
             subject=self.subject,
             text=self.text,
-            backend=self.__class__.__name__
+            notification_backend=self.__class__.__name__
         )
 
     def _direct(self):

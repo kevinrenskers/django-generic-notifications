@@ -5,13 +5,26 @@ from notifications import settings as notification_settings
 class BackendError(Exception):
     pass
 
+class NotificationTypeError(Exception):
+    pass
 
 class BaseNotification(object):
+    name = None
+    help = ''
+
     subject = None
     text = None
     allowed_backends = []
 
     _all_backends = NotificationEngine._backends
+
+    @classmethod
+    def get_name(cls):
+        return cls.name or cls.__name__
+
+    @classmethod
+    def get_help(cls):
+        return cls.help
 
     def __init__(self, subject=None, text=None, request=None, user=None, **kwargs):
         # By default all registered backends are allowed
@@ -24,6 +37,16 @@ class BaseNotification(object):
         self.request = request
         self.kwargs = kwargs
 
+    def is_registered(self):
+        return self.__class__.__name__ in NotificationEngine._types
+
+    def send(self):
+        # Is this type registered? If not, we can't do anything
+        if not self.is_registered():
+            if notification_settings.FAIL_SILENT:
+                return False
+            raise NotificationTypeError('No recipients found for this notification')
+
         users = self.get_recipients()
 
         # Force users to be a list
@@ -31,7 +54,7 @@ class BaseNotification(object):
             users = [users]
 
         if not users and not notification_settings.FAIL_SILENT:
-            raise BackendError('No recipients found for this notification')
+            raise NotificationTypeError('No recipients found for this notification')
 
         for user in users:
             backends = self._get_backends(user)
@@ -63,14 +86,24 @@ class BaseNotification(object):
         Get the correct backend(s) for this notification.
         Only backends that validate (all required settings are available) apply.
         """
+
+        from notifications.models import SelectedNotificationsType
+
+        user_selected_backends = []
+
+        try:
+            user_selected_backends = SelectedNotificationsType.objects.get(user=user, notification_type=self.__class__.__name__).get_backends()
+        except SelectedNotificationsType.DoesNotExist:
+            pass
+
         backends = {}
         for backend_name in self.allowed_backends:
-            # TODO: find out if this allowed backend is actually turned on by the user
-            subject = self.get_subject(backend_name, user)
-            text = self.get_text(backend_name, user)
-            backend = self._all_backends[backend_name](user=user, subject=subject, text=text)
-            if backend.validate():
-                backends[backend_name] = backend
+            if backend_name in user_selected_backends:
+                subject = self.get_subject(backend_name, user)
+                text = self.get_text(backend_name, user)
+                backend = self._all_backends[backend_name](user=user, subject=subject, text=text)
+                if backend.validate():
+                    backends[backend_name] = backend
 
         if not backends and not notification_settings.FAIL_SILENT:
             raise BackendError('Could not find a backend for this notification')

@@ -13,6 +13,7 @@ class DjangoEmailNotificationBackend(BaseNotificationBackend):
     A backend that sends email using Django's standard send_mail function.
     """
     process_method = 'queue'
+    name = 'Email'
 
     def _validate_list(self, lst):
         """

@@ -1,10 +1,11 @@
 from django.contrib.auth.models import User
 from django.db import models
-
+from notifications.backend.django_email import DjangoEmailNotificationBackend
 from notifications.engine import NotificationEngine
+
+from notifications.fields import JSONField
 from notifications.type.account import AccountNotification
 from notifications.type.default import DefaultNotification
-from notifications.backend.django_email import DjangoEmailNotificationBackend
 
 
 class NotificationQueue(models.Model):
@@ -15,13 +16,41 @@ class NotificationQueue(models.Model):
     subject = models.CharField(max_length=255, blank=True)
     text = models.TextField(blank=True)
     tries = models.PositiveIntegerField(default=0)
-    backend = models.CharField(max_length=40)
+    notification_backend = models.CharField(max_length=255)
+
+    def get_backend(self):
+        return NotificationEngine._backends[self.notification_backend]
 
     def __unicode__(self):
         return self.text
 
-    def get_backend(self):
-        return NotificationEngine._backends[self.backend]
+
+class SelectedNotificationsType(models.Model):
+    """
+    A model for saving which types of notification a user is interested in,
+    and which backends are selected for each of them
+    """
+    user = models.ForeignKey(User)
+    notification_type = models.CharField(max_length=255)
+    notification_backends = models.TextField()
+
+    def get_backends(self):
+        return self.notification_backends.split(',')
+
+    class Meta:
+        unique_together = ['user', 'notification_type']
+
+
+class NotificationBackendSettings(models.Model):
+    """
+    Model for saving required settings per backend
+    """
+    user = models.ForeignKey(User)
+    notification_backend = models.CharField(max_length=255)
+    settings = JSONField()
+
+    class Meta:
+        unique_together = ['user', 'notification_backend']
 
 
 # Register all notification types

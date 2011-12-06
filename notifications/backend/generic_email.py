@@ -1,5 +1,5 @@
 from notifications.backend.django_email import DjangoEmailNotificationBackend
-from generic_email import Email
+from generic_mail import Email
 
 
 class GenericEmailNotificationBackend(DjangoEmailNotificationBackend):
@@ -7,6 +7,8 @@ class GenericEmailNotificationBackend(DjangoEmailNotificationBackend):
     A backend that sends email using https://github.com/kevinrenskers/django-generic-mail.
     It's not registered by default, you will need to do this yourself.
     """
+    name = 'Email2'
+
     def process(self):
         text_body = self.text
         html_body = None

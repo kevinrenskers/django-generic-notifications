@@ -19,5 +19,6 @@
 - Completely removed the Django messages backend (it didn't make sense)
 - Updated docs and usage examples
 
-Next: ?
+Next: Future
+- Define __getattr__ for easy access to kwargs
 - New settings app
