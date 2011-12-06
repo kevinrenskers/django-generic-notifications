@@ -19,6 +19,7 @@
 - Completely removed the Django messages backend (it didn't make sense)
 - Updated docs and usage examples
 
-Next: Future
+0.2: December 6, 2011
 - Define __getattr__ for easy access to kwargs
-- New settings app
+- Start of new settings app, where users can select which types they're interested in
+- Users can also select backends per type
