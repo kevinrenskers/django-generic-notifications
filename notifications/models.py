@@ -25,10 +25,10 @@ class NotificationQueue(models.Model):
         return self.text
 
 
-class SelectedNotificationsType(models.Model):
+class DisabledNotificationsTypeBackend(models.Model):
     """
-    A model for saving which types of notification a user is interested in,
-    and which backends are selected for each of them
+    In this model we save which backends a user does NOT want to use for a notification type.
+    By saving what he does NOT want, new users and new types/backends default to everything.
     """
     user = models.ForeignKey(User)
     notification_type = models.CharField(max_length=255)

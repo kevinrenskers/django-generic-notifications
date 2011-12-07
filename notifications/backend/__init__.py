@@ -1,3 +1,5 @@
+from notifications.engine import NotificationEngine
+
 class BackendConfigError(Exception):
     pass
 
@@ -17,6 +19,9 @@ class BaseNotificationBackend(object):
         self.user = user
         self.subject = subject
         self.text = text
+
+    def is_registered(self):
+        return self.__class__.__name__ in NotificationEngine._backends
 
     def _queue(self):
         """

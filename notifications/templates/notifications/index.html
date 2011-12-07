@@ -25,7 +25,7 @@
                         {% for backend_class_name, backend_class in notification_backends.items %}
                             <td>
                                 {% if backend_class_name in type_dict.type_class.allowed_backends %}
-                                    <input type="checkbox" name="{{ type_class_name }}" value="{{ backend_class_name }}"{% if backend_class_name in type_dict.selected_backends %} checked="checked"{% endif %} />
+                                    <input type="checkbox" name="{{ type_class_name }}" value="{{ backend_class_name }}"{% if backend_class_name not in type_dict.disabled_backends %} checked="checked"{% endif %} />
                                 {% endif %}
                             </td>
                         {% endfor %}

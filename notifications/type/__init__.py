@@ -87,22 +87,22 @@ class BaseNotification(object):
         Only backends that validate (all required settings are available) apply.
         """
 
-        from notifications.models import SelectedNotificationsType
+        from notifications.models import DisabledNotificationsTypeBackend
 
-        user_selected_backends = []
+        disabled_backends = []
 
         try:
-            user_selected_backends = SelectedNotificationsType.objects.get(user=user, notification_type=self.__class__.__name__).get_backends()
-        except SelectedNotificationsType.DoesNotExist:
+            disabled_backends = DisabledNotificationsTypeBackend.objects.get(user=user, notification_type=self.__class__.__name__).get_backends()
+        except DisabledNotificationsTypeBackend.DoesNotExist:
             pass
 
         backends = {}
         for backend_name in self.allowed_backends:
-            if backend_name in user_selected_backends:
+            if backend_name not in disabled_backends:
                 subject = self.get_subject(backend_name, user)
                 text = self.get_text(backend_name, user)
                 backend = self._all_backends[backend_name](user=user, subject=subject, text=text)
-                if backend.validate():
+                if backend.is_registered() and backend.validate():
                     backends[backend_name] = backend
 
         if not backends and not notification_settings.FAIL_SILENT:

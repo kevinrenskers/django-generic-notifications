@@ -23,3 +23,6 @@
 - Define __getattr__ for easy access to kwargs
 - Start of new settings app, where users can select which types they're interested in
 - Users can also select backends per type
+
+0.2.1: December 7, 2011
+- New model DisabledNotificationsTypeBackend: instead of saving what backend a user wants to use, we save what he does not want to use instead
