@@ -1,5 +1,6 @@
 from notifications.engine import NotificationEngine
 
+
 class BackendConfigError(Exception):
     pass
 
@@ -12,13 +13,14 @@ class BaseNotificationBackend(object):
     def get_name(cls):
         return cls.name or cls.__name__
 
-    def __init__(self, user=None, subject=None, text=None):
+    def __init__(self, user=None, subject=None, text=None, send_at=None):
         if self.process_method not in ['queue', 'direct']:
             raise BackendConfigError('You need to set the process_method property of %s to either "queue" or "direct"' % self.__class__.__name__)
 
         self.user = user
         self.subject = subject
         self.text = text
+        self.send_at = send_at
 
     def is_registered(self):
         return self.__class__.__name__ in NotificationEngine._backends
@@ -29,10 +31,12 @@ class BaseNotificationBackend(object):
         and call the process() method of its backend.
         """
         from notifications.models import NotificationQueue
+
         NotificationQueue.objects.create(
             user=self.user,
             subject=self.subject,
             text=self.text,
+            send_at=self.send_at,
             notification_backend=self.__class__.__name__
         )
 

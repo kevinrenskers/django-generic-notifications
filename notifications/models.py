@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.contrib.auth.models import User
 from django.db import models
 from notifications.backend.django_email import DjangoEmailNotificationBackend
@@ -16,6 +18,7 @@ class NotificationQueue(models.Model):
     subject = models.CharField(max_length=255, blank=True)
     text = models.TextField(blank=True)
     tries = models.PositiveIntegerField(default=0)
+    send_at = models.DateTimeField(blank=True, null=True)
     notification_backend = models.CharField(max_length=255)
 
     def get_backend(self):

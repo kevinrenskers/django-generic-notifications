@@ -14,6 +14,7 @@ class BaseNotification(object):
 
     subject = None
     text = None
+    send_at = None
     allowed_backends = []
 
     _all_backends = NotificationEngine._backends
@@ -81,6 +82,9 @@ class BaseNotification(object):
     def get_subject(self, backend, user):
         return self.subject
 
+    def get_send_at(self, backend, user):
+        return self.send_at
+
     def _get_backends(self, user):
         """
         Get the correct backend(s) for this notification.
@@ -101,7 +105,8 @@ class BaseNotification(object):
             if backend_name not in disabled_backends:
                 subject = self.get_subject(backend_name, user)
                 text = self.get_text(backend_name, user)
-                backend = self._all_backends[backend_name](user=user, subject=subject, text=text)
+                send_at = self.get_send_at(backend_name, user)
+                backend = self._all_backends[backend_name](user=user, subject=subject, text=text, send_at=send_at)
                 if backend.is_registered() and backend.validate():
                     backends[backend_name] = backend
 

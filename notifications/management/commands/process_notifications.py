@@ -1,5 +1,8 @@
+from datetime import datetime
+
 from django.core.management.base import NoArgsCommand
 from django.db.models import F
+
 from notifications.models import NotificationQueue
 from notifications import settings as notification_settings
 
@@ -9,6 +12,9 @@ class Command(NoArgsCommand):
         notifications = NotificationQueue.objects.all()
 
         for notification in notifications:
+            if notification.send_at and notification.send_at > datetime.now():
+                continue # Don't send this notification yet
+
             if notification.tries >= notification_settings.QUEUE_MAX_TRIES:
                 # Don't try it any more
                 # TODO: logging, email error, etc
