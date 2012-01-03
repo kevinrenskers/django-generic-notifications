@@ -9,12 +9,9 @@ from notifications import settings as notification_settings
 
 class Command(NoArgsCommand):
     def handle_noargs(self, **options):
-        notifications = NotificationQueue.objects.all()
+        notifications = NotificationQueue.objects.exclude(send_at__gte=datetime.now())
 
         for notification in notifications:
-            if notification.send_at and notification.send_at > datetime.now():
-                continue # Don't send this notification yet
-
             if notification.tries >= notification_settings.QUEUE_MAX_TRIES:
                 # Don't try it any more
                 # TODO: logging, email error, etc
