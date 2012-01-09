@@ -54,8 +54,8 @@ class NotificationBackendSettings(models.Model):
 
 
 # Register all notification types
-NotificationEngine.register_type(DefaultNotification)
-NotificationEngine.register_type(AccountNotification)
+#NotificationEngine.register_type(DefaultNotification)
+#NotificationEngine.register_type(AccountNotification)
 
 # Register all default backends
-NotificationEngine.register_backend(DjangoEmailNotificationBackend)
+#NotificationEngine.register_backend(DjangoEmailNotificationBackend)
