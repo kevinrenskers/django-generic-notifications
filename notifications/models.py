@@ -54,11 +54,3 @@ class NotificationBackendSettings(models.Model):
 
     class Meta:
         unique_together = ['user', 'notification_backend']
-
-
-# Register all notification types
-#NotificationEngine.register_type(DefaultNotification)
-#NotificationEngine.register_type(AccountNotification)
-
-# Register all default backends
-#NotificationEngine.register_backend(DjangoEmailNotificationBackend)
