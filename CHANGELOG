@@ -26,3 +26,7 @@
 
 0.2.1: December 7, 2011
 - New model DisabledNotificationsTypeBackend: instead of saving what backend a user wants to use, we save what he does not want to use instead
+
+NEXT
+- New timed queue, send notifications after a certain time
+- The default types and backends are no longer registered by default, the developer needs to do this explicitly
