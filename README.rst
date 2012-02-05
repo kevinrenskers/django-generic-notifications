@@ -29,7 +29,7 @@ There are multiple output backends. Some possible examples are:
 - iPhone push notification
 - notification center
 
-At this moment only two email backends are provided, one of which is turned on by default.
+At this moment only two email backends are provided.
 
 Notification types
 ==================
@@ -37,7 +37,7 @@ A notification type is the glue between a message (input) and one or more possib
 might want to send all account related messages to email only, but notifications about new private messages could go to
 email, iPhone push messages, Django's own messages app, you name it.
 
-Each notification type can specify its allowed backend, and each user can specify his preferred output backend(s).
+Each notification type can specify its allowed backend(s), and each user can specify his preferred output backend(s).
 Each notification will then figure out what backend to use based on this information.
 
 Settings
