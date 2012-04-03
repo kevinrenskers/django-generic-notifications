@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Django-generic-notifications by kevinrenskers</title>
+    
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Django-generic-notifications</h1>
+        <p>Generic notification system for Django, with multiple input types and output backends</p>
+        <p class="view"><a href="https://github.com/kevinrenskers/django-generic-notifications">View the Project on GitHub <small>kevinrenskers/django-generic-notifications</small></a></p>
+        <ul>
+          <li><a href="https://github.com/kevinrenskers/django-generic-notifications/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/kevinrenskers/django-generic-notifications/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/kevinrenskers/django-generic-notifications">Fork On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1></h1>
+
+<h1>Overview</h1>
+
+<p><strong>A Django app that can handle multiple ways of showing different notification types. It's all based on multiple input types and output backends.</strong></p>
+
+<h1>Notifications</h1>
+
+<p>A notification could be anything:</p>
+
+<ul>
+<li>you have received a private message on a forum</li>
+<li>there is a new comment on your blog</li>
+<li>someone liked your profile or article</li>
+<li>a new post was created in a thread you follow</li>
+<li>someone answered your poll</li>
+<li>you have a new friend request or follower</li>
+</ul><p>As far as this project is concerned, a notification is nothing more but an (optional) subject, text body, and a list of receivers.</p>
+
+<h1>Backends</h1>
+
+<p>There are multiple output backends. Some possible examples are:</p>
+
+<ul>
+<li>email</li>
+<li>sms message</li>
+<li>iPhone push notification</li>
+<li>notification center</li>
+</ul><p>At this moment only two email backends are provided.</p>
+
+<h1>Notification types</h1>
+
+<p>A notification type is the glue between a message (input) and one or more possible backends (output). For example, you might want to send all account related messages to email only, but notifications about new private messages could go to email, iPhone push messages, Django's own messages app, you name it.</p>
+
+<p>Each notification type can specify its allowed backend(s), and each user can specify his preferred output backend(s). Each notification will then figure out what backend to use based on this information.</p>
+
+<h1>Settings</h1>
+
+<p>Some backends will need extra information from the user, for example a phone number or email address.</p>
+
+<p>Users can also select which notification types they're interested in, and what possible backends they would like to receive the message on.</p>
+
+<h1>Queue</h1>
+
+<p>Most notification backends can't process in real time, instead adding them to a queue. At this moment, this is based on a simple database model and a manage.py script which can be used from your cron.</p>
+
+<p>In the future celery tasks should be added too.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/kevinrenskers">kevinrenskers</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><!--<![endif]-->
+  </body>
+</html>
