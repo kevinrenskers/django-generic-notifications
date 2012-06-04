@@ -46,7 +46,8 @@ class BaseNotification(object):
         if not self.is_registered():
             if notification_settings.FAIL_SILENT:
                 return False
-            raise NotificationTypeError('No recipients found for this notification')
+            raise NotificationTypeError('This notification type is not registered. Use NotificationEngine.register_type, '
+                                        'for example in your models.py.')
 
         users = self.get_recipients()
 
